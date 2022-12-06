@@ -15,7 +15,7 @@ module.exports = {
     filename: 'index.min.js',
     path: path.resolve(__dirname, '../'),
     libraryTarget: 'umd',
-    library: '_mybricks_render_web'
+    library: '_mybricks_render_com_'
   },
   //devtool: 'cheap-module-source-map',
   //devtool: 'cheap-module-eval-source-map',
@@ -25,10 +25,10 @@ module.exports = {
   }],
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
-    alias: {
-      '@mybricks/comlib-core':
-        path.resolve(__dirname, '../../_comlibs/comlib-core/src/runtime.ts'),
-    }
+    // alias: {
+    //   '@mybricks/comlib-core':
+    //     path.resolve(__dirname, '../../_comlibs/comlib-core/src/runtime.ts'),
+    // }
   },
   module: {
     rules: [

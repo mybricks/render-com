@@ -12,7 +12,7 @@ export function tptRuntime() {
     }
 
     const json: any = useMemo(() => {
-      return '__json__';
+      return "__json__";
     }, []);
 
     const [r, setR] = React.useState(

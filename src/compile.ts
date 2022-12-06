@@ -57,7 +57,7 @@ export async function compile(comInfo: ComInfo, projectJson): Promise<{}> {
 
     //---runtime-------------------------------------
     let tptRT = formatTpl(tptRuntime.toString());
-    tptRT = tptRT.replace(`'__json__'`, JSON.stringify(projectJson));
+    tptRT = tptRT.replace(`"__json__"`, JSON.stringify(projectJson));
 
     // const ueCode = []
     // if (configs) {
