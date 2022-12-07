@@ -4,31 +4,39 @@
  * Mail:chemingjun@126.com Wechat:ALJZJZ
  */
 const path = require('path');
-const webpack = require('webpack')
-const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
   mode: 'production',
-  entry: './src/index.tsx',
+  entry: {
+    index: './src/index.tsx',
+    compile: './src/compile.ts',
+    render: './src/render.ts'
+  },
   output: {
-    globalObject: 'this',
-    filename: 'index.min.js',
-    path: path.resolve(__dirname, '../'),
+    path: path.resolve(__dirname, '../dist'),
     libraryTarget: 'umd',
     library: '_mybricks_render_com_'
   },
   //devtool: 'cheap-module-source-map',
   //devtool: 'cheap-module-eval-source-map',
-  externals: [{
-    'react': {commonjs: "react", commonjs2: "react", amd: "react", root: "React"},
-    'react-dom': {commonjs: "react-dom", commonjs2: "react-dom", amd: "react-dom", root: "ReactDOM"},
-  }],
+  externals: [
+    {
+      react: {
+        commonjs: 'react',
+        commonjs2: 'react',
+        amd: 'react',
+        root: 'React'
+      },
+      'react-dom': {
+        commonjs: 'react-dom',
+        commonjs2: 'react-dom',
+        amd: 'react-dom',
+        root: 'ReactDOM'
+      }
+    }
+  ],
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx'],
-    // alias: {
-    //   '@mybricks/comlib-core':
-    //     path.resolve(__dirname, '../../_comlibs/comlib-core/src/runtime.ts'),
-    // }
+    extensions: ['.js', '.jsx', '.ts', '.tsx']
   },
   module: {
     rules: [
@@ -56,7 +64,7 @@ module.exports = {
       {
         test: /^[^\.]+\.less$/i,
         use: [
-          {loader: 'style-loader'},
+          { loader: 'style-loader' },
           {
             loader: 'css-loader',
             options: {
@@ -65,30 +73,13 @@ module.exports = {
               }
             }
           },
-          {loader: 'less-loader'}
+          { loader: 'less-loader' }
         ]
       }
     ]
   },
-  optimization: {
-    concatenateModules: false,//name_name
-    minimize: true,
-    minimizer: [
-      new TerserPlugin({
-        extractComments: false,
-      }),
-    ]
-  },
 
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('production')
-      }
-    }),
-    new webpack.ProvidePlugin({
-      'React': 'react'
-    }),
     //new BundleAnalyzerPlugin()
   ]
-}
+};

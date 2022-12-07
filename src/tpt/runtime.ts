@@ -11,9 +11,7 @@ export function tptRuntime() {
       throw new Error(`window.React not found`);
     }
 
-    const json: any = useMemo(() => {
-      return "__json__";
-    }, []);
+    const json: any = "__json__";
 
     const [r, setR] = React.useState(
       React.createElement('div', null, '\u52A0\u8F7D\u4E2D...')

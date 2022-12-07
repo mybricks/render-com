@@ -2,7 +2,7 @@
   "name": "@mybricks/render-com",
   "version": "1.0.1-beta2",
   "description": "Render for web projects",
-  "main": "index.min.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "webpack --config ./scripts/webpack.build.js",
     "dev": "webpack-dev-server --config ./scripts/webpack.dev.js"
@@ -11,6 +11,10 @@
     "type": "git",
     "url": "https://github.com/mybricks/rxui.git"
   },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
@@ -19,7 +23,7 @@
   "license": "ISC",
   "dependencies": {
     "@mybricks/comlib-core": "0.0.2",
-    "@mybricks/render-web": "^1.0.63"
+    "@mybricks/render-web": "^1.0.67"
   },
   "devDependencies": {
     "@babel/core": "^7.18.9",

@@ -1,8 +1,8 @@
 export function tptEditors() {
   return function () {
-    const configs: any = '__configs__';
-    const fileId = '__fileId__';
-    const outputs: any = '__outputs__';
+    const configs: any = "__configs__";
+    const fileId = "__fileId__";
+    const outputs: any = "__outputs__";
 
     return {
       '@init'({ style }) {
@@ -12,7 +12,7 @@ export function tptEditors() {
       '@resize': {
         options: ['width', 'height']
       },
-      ':root': ({}, cate1, cate2) => {
+      ':root': ({ }, cate1, cate2) => {
         cate1.title = '常规';
         cate1.items = [
           ...(configs || []).map((cfg) => {

@@ -78,9 +78,9 @@ export async function compile(comInfo: ComInfo, projectJson): Promise<{}> {
     //---edit-----------------------------------------
     let tptEdt = formatTpl(tptEditors.toString());
     tptEdt = tptEdt
-      .replace(`'__configs__'`, JSON.stringify(configs))
-      .replace('__fileId__', fileId)
-      .replace(`'__outputs__'`, JSON.stringify(noRelOutputs));
+      .replace(`"__configs__"`, JSON.stringify(configs))
+      .replace(`__fileId__`, fileId)
+      .replace(`"__outputs__"`, JSON.stringify(noRelOutputs));
 
     //console.log(tptRT)/////TODO 拆分成单独的包
 

@@ -25,12 +25,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react",
-    "baseUrl": ".",
-    "paths": {
-      "@mybricks/render-web": [
-        "../render-web/src"
-      ]
-    }
+    "baseUrl": "."
   },
   "exclude": [
     "./node_modules"
