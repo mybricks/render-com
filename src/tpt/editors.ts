@@ -3,7 +3,7 @@ export function tptEditors() {
     const configs: any = "__configs__";
     const fileId = "__fileId__";
     const outputs: any = "__outputs__";
-
+    const isPrivate: any = "__isPrivate__";
     return {
       '@init'({ style }) {
         style.width = '100%';
@@ -12,7 +12,7 @@ export function tptEditors() {
       '@resize': {
         options: ['width', 'height']
       },
-      ':root': ({ }, cate1, cate2) => {
+      ':root': ({}, cate1, cate2) => {
         cate1.title = '常规';
         cate1.items = [
           ...(configs || []).map((cfg) => {
@@ -87,21 +87,23 @@ export function tptEditors() {
           }
         ];
 
-        cate2.title = '高级';
-        cate2.items = [
-          {
-            title: '打开云组件搭建页面',
-            type: 'Button',
-            value: {
-              set() {
-                window.open(
-                  `/page/application/cdm/pc?fileId=${fileId}`,
-                  `cdm-${fileId}`
-                );
+        if (isPrivate !== true) {
+          cate2.title = '高级';
+          cate2.items = [
+            {
+              title: '打开云组件搭建页面',
+              type: 'Button',
+              value: {
+                set() {
+                  window.open(
+                    `/page/application/cdm/pc?fileId=${fileId}`,
+                    `cdm-${fileId}`
+                  );
+                }
               }
             }
-          }
-        ];
+          ];
+        }
       }
     };
   };

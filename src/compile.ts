@@ -1,6 +1,7 @@
 import data from './tpt/data.json';
 import { tptRuntime } from './tpt/runtime';
 import { tptEditors } from './tpt/editors';
+import { tptUpgrade } from './tpt/upgrade';
 
 const formatTpl = (str) => {
   str = str.substring(str.indexOf(`return`) + 7, str.length - 1);
@@ -23,6 +24,7 @@ interface ComJsonProps {
   data: any;
   runtime: string;
   editors: string;
+  upgrade?: string;
   inputs: {
     id: string;
     title: string;
@@ -36,8 +38,13 @@ interface ComJsonProps {
   }[];
   deps: { namespace: string; version: string }[];
 }
-export async function compile(comInfo: ComInfo, projectJson): Promise<{}> {
+export async function compile(
+  comInfo: ComInfo,
+  projectJson: any,
+  otherInfo?: any
+): Promise<{}> {
   const { title, version, namespace, fileId } = comInfo;
+  const { serviceList, isPrivate } = otherInfo || {};
   return new Promise<{}>((resolve) => {
     const { deps, inputs, outputs, pinRels } = projectJson;
     const realInputs = inputs.filter((pin) => pin.type !== 'config');
@@ -57,32 +64,17 @@ export async function compile(comInfo: ComInfo, projectJson): Promise<{}> {
 
     //---runtime-------------------------------------
     let tptRT = formatTpl(tptRuntime.toString());
-    tptRT = tptRT.replace(`"__json__"`, JSON.stringify(projectJson));
-
-    // const ueCode = []
-    // if (configs) {
-    //   configs.forEach(cfg => {
-    //     ueCode.push(`
-    //       React.useEffect(()=>{
-    //         const curVal = data.configs['${cfg.id}']
-    //         if(ref.current){
-    //           ref.current.inputs['${cfg.id}'](curVal)
-    //         }
-    //       },[ref.current,data.configs['${cfg.id}']])
-    //     `)
-    //   })
-    // }
-    //
-    // tptRT = tptRT.replaceAll(/['"]__ueCode__['"]/gi, ueCode.join(';'))
+    tptRT = tptRT
+      .replace(`"__json__"`, JSON.stringify(projectJson))
+      .replace(`"__serviceList__"`, JSON.stringify(serviceList || []));
 
     //---edit-----------------------------------------
     let tptEdt = formatTpl(tptEditors.toString());
     tptEdt = tptEdt
       .replace(`"__configs__"`, JSON.stringify(configs))
       .replace(`__fileId__`, fileId)
+      .replace(`"__isPrivate__"`, isPrivate ? true : false)
       .replace(`"__outputs__"`, JSON.stringify(noRelOutputs));
-
-    //console.log(tptRT)/////TODO 拆分成单独的包
 
     //---comjson-----------------------------------------
     const comDef: ComJsonProps = {
@@ -115,6 +107,14 @@ export async function compile(comInfo: ComInfo, projectJson): Promise<{}> {
         };
       });
     }
+
+    //---upgrade-----------------------------------------
+    let tptUpg = formatTpl(tptUpgrade.toString());
+    tptUpg = tptUpg
+      .replace(`"__inputs__"`, JSON.stringify(comDef.inputs))
+      .replace(`"__outputs__"`, JSON.stringify(comDef.outputs))
+      .replace(`"__data__"`, JSON.stringify(comDef.data));
+    comDef.upgrade = tptUpg;
 
     resolve(comDef);
   });

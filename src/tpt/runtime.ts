@@ -12,6 +12,7 @@ export function tptRuntime() {
     }
 
     const json: any = "__json__";
+    const serviceList: any = "__serviceList__";
 
     const [r, setR] = React.useState(
       React.createElement('div', null, '\u52A0\u8F7D\u4E2D...')
@@ -60,7 +61,14 @@ export function tptRuntime() {
               }
             }
           },
-          env
+          env: Object.assign({}, env, {
+            callService: (id, params) => {
+              const item = serviceList?.find?.((service) => {
+                return service.id === id;
+              });
+              return env.callService(item, params);
+            }
+          })
         })
         .then((rst) => {
           setR(rst);
