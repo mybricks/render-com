@@ -73,7 +73,7 @@ export async function compile(
     tptEdt = tptEdt
       .replace(`"__configs__"`, JSON.stringify(configs))
       .replace(`__fileId__`, fileId)
-      .replace(`"__isPrivate__"`, isPrivate ? true : false)
+      .replace(`"__otherInfo__"`, JSON.stringify({ isPrivate }))
       .replace(`"__outputs__"`, JSON.stringify(noRelOutputs));
 
     //---comjson-----------------------------------------

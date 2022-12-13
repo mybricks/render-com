@@ -3,7 +3,7 @@ export function tptEditors() {
     const configs: any = "__configs__";
     const fileId = "__fileId__";
     const outputs: any = "__outputs__";
-    const isPrivate: any = "__isPrivate__";
+    const otherInfo: any = "__otherInfo__";
     return {
       '@init'({ style }) {
         style.width = '100%';
@@ -87,7 +87,7 @@ export function tptEditors() {
           }
         ];
 
-        if (isPrivate !== true) {
+        if (!otherInfo?.isPrivate) {
           cate2.title = '高级';
           cate2.items = [
             {
