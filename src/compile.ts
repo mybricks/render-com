@@ -16,6 +16,7 @@ interface ComInfo {
   version: string;
   namespace: string;
   fileId: string;
+  icon?: string;
 }
 interface ComJsonProps {
   namespace: string;
@@ -36,6 +37,7 @@ interface ComJsonProps {
     title: string;
     schema: string;
   }[];
+  icon?: string;
   deps: { namespace: string; version: string }[];
 }
 export async function compile(
@@ -43,7 +45,7 @@ export async function compile(
   projectJson: any,
   otherInfo?: any
 ): Promise<{}> {
-  const { title, version, namespace, fileId } = comInfo;
+  const { title, version, namespace, icon, fileId } = comInfo;
   const { serviceList, isPrivate } = otherInfo || {};
   return new Promise<{}>((resolve) => {
     const { deps, inputs, outputs, pinRels } = projectJson;
@@ -82,6 +84,7 @@ export async function compile(
       title,
       data,
       version,
+      icon,
       runtime: tptRT,
       editors: tptEdt,
       inputs: [],
