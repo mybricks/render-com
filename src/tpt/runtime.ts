@@ -28,6 +28,16 @@ export function tptRuntime() {
               ref.current = refs;
               const { inputs, outputs, pinRels } = json;
               if (inputs) {
+                const configInputs = inputs.filter(
+                  (pin) => pin.type === 'config'
+                );
+                configInputs.forEach((ipt) => {
+                  const curVal = data.configs[ipt.id];
+                  if (ref.current && curVal !== undefined) {
+                    refs.inputs[ipt.id](curVal);
+                  }
+                });
+
                 const realInputs = inputs.filter(
                   (pin) => pin.type !== 'config'
                 );
@@ -42,15 +52,6 @@ export function tptRuntime() {
                       );
                       refs.inputs[ipt.id](val);
                     });
-                  }
-                });
-                const configInputs = inputs.filter(
-                  (pin) => pin.type === 'config'
-                );
-                configInputs.forEach((ipt) => {
-                  const curVal = data.configs[ipt.id];
-                  if (ref.current && curVal !== undefined) {
-                    refs.inputs[ipt.id](curVal);
                   }
                 });
               }
