@@ -42,7 +42,8 @@ export function tptRuntime() {
                   (pin) => pin.type !== 'config'
                 );
                 realInputs.forEach((ipt) => {
-                  const fn = myInputs[ipt.id];
+                  const { id } = ipt;
+                  const fn = myInputs[id];
                   if (typeof fn === 'function') {
                     fn((val, relOutputs) => {
                       pinRels?.[`_rootFrame_-${ipt.id}`]?.forEach(
@@ -52,6 +53,11 @@ export function tptRuntime() {
                       );
                       refs.inputs[ipt.id](val);
                     });
+                  } else if (myInputs.hasOwnProperty(id)) {
+                    if (myInputs.hasOwnProperty(id)) {
+                      refs.inputs[id](myInputs[id])
+                      myInputs[id] = refs.inputs[id];
+                    }
                   }
                 });
               }
