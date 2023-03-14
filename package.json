@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "webpack --config ./scripts/webpack.build.js",
-    "dev": "webpack-dev-server --config ./scripts/webpack.dev.js"
+    "dev": "webpack-dev-server --config ./scripts/webpack.dev.js",
+    "publishToNpm": "npm run build && npm publish --registry=https://registry.npmjs.org --access=public"
   },
   "repository": {
     "type": "git",
@@ -22,8 +23,8 @@
   "author": "CheMingjun",
   "license": "ISC",
   "dependencies": {
-    "@mybricks/comlib-core": "0.0.8",
-    "@mybricks/render-web": "^1.1.1"
+    "@mybricks/comlib-core": "0.0.10",
+    "@mybricks/render-web": "1.1.17"
   },
   "devDependencies": {
     "@babel/core": "^7.18.9",
