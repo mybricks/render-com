@@ -15,7 +15,8 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, '../dist'),
     libraryTarget: 'umd',
-    library: '_mybricks_render_com_'
+    library: '_mybricks_render_com_',
+    globalObject: "this"
   },
   //devtool: 'cheap-module-source-map',
   //devtool: 'cheap-module-eval-source-map',
