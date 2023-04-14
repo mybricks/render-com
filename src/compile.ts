@@ -46,7 +46,7 @@ export async function compile(
   otherInfo?: any
 ): Promise<{}> {
   const { title, version, namespace, icon, fileId } = comInfo;
-  const { serviceList, isPrivate } = otherInfo || {};
+  const { serviceList, isPrivate, ...rest } = otherInfo || {};
   return new Promise<{}>((resolve) => {
     const { deps, inputs, outputs, pinRels } = projectJson;
     const realInputs = inputs.filter((pin) => pin.type !== 'config');
@@ -75,7 +75,7 @@ export async function compile(
     tptEdt = tptEdt
       .replace(`"__configs__"`, JSON.stringify(configs))
       .replace(`__fileId__`, fileId)
-      .replace(`"__otherInfo__"`, JSON.stringify({ isPrivate }))
+      .replace(`"__otherInfo__"`, JSON.stringify({ isPrivate, ...rest }))
       .replace(`"__outputs__"`, JSON.stringify(noRelOutputs));
 
     //---comjson-----------------------------------------
