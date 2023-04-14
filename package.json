@@ -1,6 +1,6 @@
 {
   "name": "@mybricks/render-com",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Render for web projects",
   "main": "dist/index.js",
   "scripts": {
