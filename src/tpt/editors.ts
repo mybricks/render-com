@@ -4,6 +4,7 @@ export function tptEditors() {
     const fileId = "__fileId__";
     const outputs: any = "__outputs__";
     const otherInfo: any = "__otherInfo__";
+
     return {
       '@init'({ style }) {
         style.width = '100%';
@@ -96,7 +97,7 @@ export function tptEditors() {
               value: {
                 set() {
                   window.open(
-                    `/page/application/cdm/pc?fileId=${fileId}`,
+                    `${otherInfo?.cdmUrlPrefix || '/page/application/cdm/pc?fileId='}${fileId}`,
                     `cdm-${fileId}`
                   );
                 }

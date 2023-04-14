@@ -11,3 +11,4 @@ tags/*
 package-lock.json
 index.min.js
 dist/
+yarn.lock
