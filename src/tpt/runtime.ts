@@ -26,6 +26,8 @@ export function tptRuntime() {
           ref(refs) {
             if (!ref.current) {
               ref.current = refs;
+              // 触发外部更新
+              data.comRef = refs
               const { inputs, outputs, pinRels } = json;
               if (inputs) {
                 const configInputs = inputs.filter(
