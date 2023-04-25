@@ -35,7 +35,7 @@ export function tptEditors() {
                 },
                 set({ data }, val) {
                   data.configs[id] = val;
-                  data.comRef.inputs[id](val);
+                  data.comRef?.current?.inputs[id](val);
                 }
               }
             };
