@@ -23,6 +23,7 @@ export function tptEditors() {
             const temp: any = {
               title: cfg.title,
               type: extValues.edtType,
+              description: extValues.description,
               value: {
                 get({ data }) {
                   const val = data.configs[id];
@@ -34,7 +35,7 @@ export function tptEditors() {
                 },
                 set({ data }, val) {
                   data.configs[id] = val;
-                  data.comRef.current.inputs[id](val);
+                  data.comRef.inputs[id](val);
                 }
               }
             };

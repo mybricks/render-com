@@ -10,7 +10,8 @@ module.exports = {
   entry: {
     index: './src/index.tsx',
     compile: './src/compile.ts',
-    render: './src/render.ts'
+    render: './src/render.ts',
+    run: './src/run.ts',
   },
   output: {
     path: path.resolve(__dirname, '../dist'),
