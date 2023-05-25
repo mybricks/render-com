@@ -11,68 +11,75 @@ export function tptRuntime() {
     const { useMemo } = React;
     const json: any = "__json__";
     const serviceList: any = "__serviceList__";
+    const [r, setR] = React.useState(
+      React.createElement('div', null, '\u52A0\u8F7D\u4E2D...')
+    );
     const ref = React.useRef();
 
-    const r = useMemo(() => {
-      return env.renderCom(json, {
-        ref(refs) {
-          if (!ref.current) {
-            ref.current = refs;
-            // 触发外部更新
-            data.comRef = {
-              current: refs
-            }
-            const { inputs, outputs, pinRels } = json;
-            if (inputs) {
-              const configInputs = inputs.filter(
-                (pin) => pin.type === 'config'
-              );
-              configInputs.forEach((ipt) => {
-                const curVal = data.configs[ipt.id];
-                if (ref.current && curVal !== undefined) {
-                  refs.inputs[ipt.id](curVal);
-                }
-              });
-
-              const realInputs = inputs.filter(
-                (pin) => pin.type !== 'config'
-              );
-              realInputs.forEach((ipt) => {
-                const { id } = ipt;
-                const fn = myInputs[id];
-                if (typeof fn === 'function') {
-                  fn((val, relOutputs) => {
-                    pinRels?.[`_rootFrame_-${ipt.id}`]?.forEach(
-                      (outputId) => {
-                        refs.outputs(outputId, relOutputs[outputId]);
-                      }
-                    );
-                    refs.inputs[ipt.id](val);
-                  });
-                } else if (myInputs.hasOwnProperty(id)) {
-                  if (myInputs.hasOwnProperty(id)) {
-                    refs.inputs[id](myInputs[id])
-                    myInputs[id] = refs.inputs[id];
+    useMemo(() => {
+      env
+        .renderCom(json, {
+          ref(refs) {
+            if (!ref.current) {
+              ref.current = refs;
+              // 触发外部更新
+              data.comRef = {
+                current: refs
+              }
+              const { inputs, outputs, pinRels } = json;
+              if (inputs) {
+                const configInputs = inputs.filter(
+                  (pin) => pin.type === 'config'
+                );
+                configInputs.forEach((ipt) => {
+                  const curVal = data.configs[ipt.id];
+                  if (ref.current && curVal !== undefined) {
+                    refs.inputs[ipt.id](curVal);
                   }
-                }
-              });
+                });
+
+                const realInputs = inputs.filter(
+                  (pin) => pin.type !== 'config'
+                );
+                realInputs.forEach((ipt) => {
+                  const { id } = ipt;
+                  const fn = myInputs[id];
+                  if (typeof fn === 'function') {
+                    fn((val, relOutputs) => {
+                      pinRels?.[`_rootFrame_-${ipt.id}`]?.forEach(
+                        (outputId) => {
+                          refs.outputs(outputId, relOutputs[outputId]);
+                        }
+                      );
+                      refs.inputs[ipt.id](val);
+                    });
+                  } else if (myInputs.hasOwnProperty(id)) {
+                    if (myInputs.hasOwnProperty(id)) {
+                      refs.inputs[id](myInputs[id])
+                      myInputs[id] = refs.inputs[id];
+                    }
+                  }
+                });
+              }
+              if (outputs) {
+                outputs.forEach((opt) => {
+                  refs.outputs(opt.id, myOutputs[opt.id]);
+                });
+              }
             }
-            if (outputs) {
-              outputs.forEach((opt) => {
-                refs.outputs(opt.id, myOutputs[opt.id]);
+          },
+          env: Object.assign({}, env, {
+            callService: (id, params) => {
+              const item = serviceList?.find?.((service) => {
+                return service.id === id;
               });
+              return env.callService(item, params);
             }
-          }
-        },
-        env: Object.assign({}, env, {
-          callService: (id, params) => {
-            const item = serviceList?.find?.((service) => {
-              return service.id === id;
-            });
-            return env.callService(item, params);
-          }
+          })
         })
-      })
+        .then((rst) => {
+          setR(rst);
+        });
     }, []);
 
     return r;
