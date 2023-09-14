@@ -49,6 +49,18 @@ export async function compile(
   const { serviceList, isPrivate, ...rest } = otherInfo || {};
   return new Promise<{}>((resolve) => {
     const { deps, inputs, outputs, pinRels } = projectJson;
+
+    // 保留
+    const { coms } = projectJson
+    const reserveEditorsMap = {}
+    Object.entries(coms).forEach(([key, value]: any) => {
+      const { reservedEditorAry } = value
+      if (reservedEditorAry) {
+        reserveEditorsMap[value.id] = value
+      }
+    })
+    // 保留
+
     const realInputs = inputs.filter((pin) => pin.type !== 'config');
     const relsOutputs: string[] = [];
     realInputs.forEach((pin) => {
@@ -76,7 +88,8 @@ export async function compile(
       .replace(`"__configs__"`, JSON.stringify(configs))
       .replace(`__fileId__`, fileId)
       .replace(`"__otherInfo__"`, JSON.stringify({ isPrivate, ...rest }))
-      .replace(`"__outputs__"`, JSON.stringify(noRelOutputs));
+      .replace(`"__outputs__"`, JSON.stringify(noRelOutputs))
+      .replace(`"__reserveEditorsMap__"`, JSON.stringify(reserveEditorsMap));
 
     //---comjson-----------------------------------------
     const comDef: ComJsonProps = {

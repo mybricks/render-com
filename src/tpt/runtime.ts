@@ -62,6 +62,13 @@ export function tptRuntime() {
                 refs.outputs(opt.id, myOutputs[opt.id]);
               });
             }
+            /**
+             * 存储子组件配置的数据源
+             */
+            Object.entries(data.subComponentData).forEach(([key, value]) => {
+              const data = refs.get(key).data
+              Object.assign(data, value)
+            })
           }
         },
         env: Object.assign({}, env, {

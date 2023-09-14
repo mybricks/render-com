@@ -4,8 +4,25 @@ export function tptEditors() {
     const fileId = "__fileId__";
     const outputs: any = "__outputs__";
     const otherInfo: any = "__otherInfo__";
+    const reserveEditorsMap: any = "__reserveEditorsMap__";
 
-    return {
+    const comDefs = {}
+
+    function deepSearchComAray (comAray) {
+      comAray.forEach((com) => {
+        const { comAray } = com
+        if (Array.isArray(comAray)) {
+          deepSearchComAray(comAray)
+        } else {
+          const { namespace } = com
+          comDefs[namespace] = com
+        }
+      })
+    }
+
+    deepSearchComAray(window['__comlibs_edit_'])
+
+    const editors = {
       '@init'({ style }) {
         style.width = '100%';
         style.height = 'auto';
@@ -108,5 +125,78 @@ export function tptEditors() {
         }
       }
     };
+
+    /**
+     * 匹配对应的编辑器
+     */
+    function getEditor(config, match, obj: any = {}) {
+      const type = toString.call(config);
+      if (type === '[object Object]') {
+        if (config.type) {
+          if (config.id === match) {
+            obj.res = config;
+          }
+        } else if (Array.isArray(config.items)) {
+          getEditor(config.items, match, obj);
+        } else if (typeof config.items === 'function') {
+          const cate0 = {};
+          const cate1 = {};
+          const cate2 = {};
+    
+          config.items({}, cate0, cate1, cate2);
+  
+          [cate0, cate1, cate2].find(cate => getEditor(cate, match, obj));
+        };
+      } else if (type === '[object Array]') {
+        config.find(config => getEditor(config, match, obj));
+      } else if (type === '[object Function]') {
+        const cate0 = {};
+        const cate1 = {};
+        const cate2 = {};
+  
+        config({}, cate0, cate1, cate2);
+  
+        [cate0, cate1, cate2].find(cate => getEditor(cate, match, obj));
+      };
+  
+      return obj.res;
+    };
+
+    /**
+     * 仅实现了子组件数据源的配置
+     */
+    Object.entries(reserveEditorsMap).forEach(([comId, { def, title, reservedEditorAry }]: any) => {
+      const { namespace } = def
+      Object.entries(reservedEditorAry).forEach(([selector, value]: any) => {
+        const editorKey = `#${comId}${selector === ':root' ? '' : ` ${selector}`}`
+        const items: any = []
+
+        value.forEach(({ id }) => {
+          const editor = getEditor(comDefs[namespace].editors[selector], id)
+
+          items.push({
+            ...editor,
+            id: null,
+            value: {
+              get(props) {
+                const data = props.data.comRef?.current?.get(comId).data
+                props.data.subComponentData[comId] = data
+                return editor.value.get({...props, slot: {}, data});
+              },
+              set(props, value) {
+                editor.value.set({...props, slot: {}, data: props.data.comRef?.current?.get(comId).data}, value);
+              }
+            }
+          })
+        })
+
+        editors[editorKey] = (props, cate0) => {
+          cate0.title = title
+          cate0.items = items
+        }
+      })
+    })
+
+    return editors
   };
 }
