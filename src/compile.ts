@@ -48,8 +48,7 @@ export async function compile(
   const { title, version, namespace, icon, fileId } = comInfo;
   const { serviceList, isPrivate, ...rest } = otherInfo || {};
   return new Promise<{}>((resolve) => {
-    const { deps, inputs, outputs, pinRels } = projectJson;
-
+    const { deps, inputs, outputs, pinRels } = Array.isArray(projectJson?.scenes) ? projectJson.scenes[0] : projectJson;
     // 保留
     const { coms } = projectJson
     const reserveEditorsMap = {}

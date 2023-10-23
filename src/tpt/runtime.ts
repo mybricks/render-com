@@ -8,10 +8,14 @@ export function tptRuntime() {
     ) {
       throw new Error(`window.React not found`);
     }
-    const { useMemo } = React;
+    const isPromise = (obj) => {
+      return Promise.resolve(obj) === obj;
+    }
+    const { useMemo, useState, useEffect } = React;
     const json: any = "__json__";
     const serviceList: any = "__serviceList__";
     const ref = React.useRef();
+    const [curCom, setCurCom] = useState(null)
 
     const r = useMemo(() => {
       return env.renderCom(json, {
@@ -22,7 +26,7 @@ export function tptRuntime() {
             data.comRef = {
               current: refs
             }
-            const { inputs, outputs, pinRels } = json;
+            const { inputs, outputs, pinRels } = Array.isArray(json?.scenes) ? json.scenes[0] : json;
             if (inputs) {
               const configInputs = inputs.filter(
                 (pin) => pin.type === 'config'
@@ -82,6 +86,15 @@ export function tptRuntime() {
       })
     }, []);
 
-    return r;
+    useEffect(() => {
+      if (isPromise(r)) {
+        r.then(com => {
+          setCurCom(com)
+        })
+      }
+    }, [r])
+
+    // 兼容renderCom是promise的用法
+    return isPromise(r) ? curCom : r;
   };
 }
