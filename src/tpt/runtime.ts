@@ -21,6 +21,9 @@ export function tptRuntime() {
       return env.renderCom(json, {
         ref(refs) {
           if (!ref.current) {
+            if (!data.subComponentData) {
+              data.subComponentData = {}
+            }
             ref.current = refs;
             // 触发外部更新
             data.comRef = {
