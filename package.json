@@ -1,6 +1,6 @@
 {
   "name": "@mybricks/render-com",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "Render for web projects",
   "main": "dist/index.js",
   "scripts": {
@@ -24,7 +24,7 @@
   "license": "ISC",
   "dependencies": {
     "@mybricks/comlib-core": "0.0.10",
-    "@mybricks/render-web": "1.2.22"
+    "@mybricks/render-web": "1.2.26"
   },
   "devDependencies": {
     "@babel/core": "^7.18.9",
