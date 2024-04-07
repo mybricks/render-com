@@ -16,10 +16,16 @@ export function tptRuntime() {
     const serviceList: any = "__serviceList__";
     const ref = React.useRef();
     const [curCom, setCurCom] = useState(null)
+    const mainScene = Array.isArray(json?.scenes) ? json.scenes[0] : json;
 
     const r = useMemo(() => {
+      let flag = false;
+
       return env.renderCom(json, {
         ref(refs) {
+          // 多场景会执行多次 ref，但实际只需执行一次
+          if (flag) return;
+          flag = true;
           if (!ref.current) {
             if (!data.subComponentData) {
               data.subComponentData = {}
@@ -29,7 +35,7 @@ export function tptRuntime() {
             data.comRef = {
               current: refs
             }
-            const { inputs, outputs, pinRels } = Array.isArray(json?.scenes) ? json.scenes[0] : json;
+            const { inputs, outputs, pinRels } = mainScene
             if (inputs) {
               const configInputs = inputs.filter(
                 (pin) => pin.type === 'config'
@@ -37,7 +43,8 @@ export function tptRuntime() {
               configInputs.forEach((ipt) => {
                 const curVal = data.configs[ipt.id];
                 if (ref.current && curVal !== undefined) {
-                  refs.inputs[ipt.id](curVal);
+                  const configInput = refs.inputs[ipt.id]
+                  configInput && configInput(curVal);
                 }
               });
 
@@ -78,14 +85,17 @@ export function tptRuntime() {
             })
           }
         },
-        env: Object.assign({}, env, {
+        env: {
+          ...env,
           callService: (id, params) => {
             const item = serviceList?.find?.((service) => {
               return service.id === id;
             });
             return env.callService(item, params);
           }
-        })
+        },
+        /** 禁止主动触发IO、执行自执行计算组件 */
+        disableAutoRun: true,
       })
     }, []);
 

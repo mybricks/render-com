@@ -2,6 +2,7 @@ import data from './tpt/data.json';
 import { tptRuntime } from './tpt/runtime';
 import { tptEditors } from './tpt/editors';
 import { tptUpgrade } from './tpt/upgrade';
+import { transform } from './transform';
 
 const formatTpl = (str) => {
   str = str.substring(str.indexOf(`return`) + 7, str.length - 1);
@@ -42,15 +43,16 @@ interface ComJsonProps {
 }
 export async function compile(
   comInfo: ComInfo,
-  projectJson: any,
+  originProjectJson: any,
   otherInfo?: any
 ): Promise<{}> {
+  const projectJson = transform(originProjectJson)
   const { title, version, namespace, icon, fileId } = comInfo;
   const { serviceList, isPrivate, ...rest } = otherInfo || {};
   return new Promise<{}>((resolve) => {
     const { deps, inputs, outputs, pinRels } = Array.isArray(projectJson?.scenes) ? projectJson.scenes[0] : projectJson;
     // 保留
-    const { coms } = projectJson
+    const { coms = {} } = projectJson
     const reserveEditorsMap = {}
     Object.entries(coms).forEach(([key, value]: any) => {
       const { reservedEditorAry } = value
@@ -58,10 +60,10 @@ export async function compile(
         reserveEditorsMap[value.id] = value
       }
     })
-    // 保留
 
     const realInputs = inputs.filter((pin) => pin.type !== 'config');
-    const relsOutputs: string[] = [];
+    // 去除默认的点击加载等输出
+    const relsOutputs: string[] = ['click', 'scroll', 'load', 'unload'];
     realInputs.forEach((pin) => {
       relsOutputs.push(...(pinRels?.[`_rootFrame_-${pin.id}`] || []));
     });
@@ -84,6 +86,7 @@ export async function compile(
     //---edit-----------------------------------------
     let tptEdt = formatTpl(tptEditors.toString());
     tptEdt = tptEdt
+      .replace('"--replace-title--"', `'${title}'`)
       .replace(`"__configs__"`, JSON.stringify(configs))
       .replace(`__fileId__`, fileId)
       .replace(`"__otherInfo__"`, JSON.stringify({ isPrivate, ...rest }))
