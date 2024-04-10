@@ -93,6 +93,20 @@ export async function compile(
       .replace(`"__outputs__"`, JSON.stringify(noRelOutputs))
       .replace(`"__reserveEditorsMap__"`, JSON.stringify(reserveEditorsMap));
 
+    const allDeps =
+      projectJson.deps ||
+      [
+        ...(projectJson?.scenes || []),
+        ...(projectJson.modules
+          ? Object.values(projectJson.modules).map((item) => item.json)
+          : []),
+      ].reduce(
+        (pre, cur) => {
+          pre.push(...cur.deps);
+          return pre;
+        },
+        []
+      );
     //---comjson-----------------------------------------
     const comDef: ComJsonProps = {
       namespace,
@@ -104,7 +118,7 @@ export async function compile(
       editors: tptEdt,
       inputs: [],
       outputs: [],
-      deps
+      deps: allDeps
     };
     if (realInputs) {
       comDef.inputs = realInputs.map((ipt) => {
