@@ -119,7 +119,7 @@ const transformScene = (scene: Record<string, any>) => {
 };
 
 const transformGlobalFx = (json) => {
-  if (json.global!.fxFrames) {
+  if (json?.global?.fxFrames) {
     json.global.fxFrames = (json.global.fxFrames ?? []).map((fx) => {
       (Object.keys(fx.coms) ?? []).forEach((id) => {
         const namespace = fx.coms[id]!.def.namespace;
